@@ -14,16 +14,11 @@ function verificarToken(req, res, next) {
       return res.status(403).json({ error: 'Token inválido' });
     }
 
-    // ✅ AQUI ESTÁ O PONTO CRÍTICO
-    req.usuario = { id: decoded.id };
+    // 🔧 Corrigido: deve ser "req.user"
+    req.user = { id: decoded.id };
 
     next();
   });
 }
 
 module.exports = verificarToken;
-
-
-
-
-
