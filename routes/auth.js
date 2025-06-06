@@ -1,32 +1,41 @@
+
 const express = require('express');
-const router = express.Router();
 const bcrypt = require('bcrypt');
-const User = require('../models/User');
+const router = express.Router();
+const { User } = require('../models'); // Certifique-se de que seu model está nomeado corretamente
 
-// Registro
 router.post('/register', async (req, res) => {
-  try {
-    const { username, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ username, email, password: hashedPassword });
-    res.status(201).json(newUser);
-  } .catch(error => {
-  console.error("Erro ao registrar usuário:", error); // Mostra no log da Render
-  res.status(500).json({ error: "Erro ao registrar usuário", details: error.message });
-});
+  const { nome, email, senha } = req.body;
 
-
-// Login
-router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ where: { email } });
-    if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ error: 'Senha incorreta' });
-    res.json({ message: 'Login bem-sucedido', user: { id: user.id, username: user.username, email: user.email } });
-  } catch (err) {
-    res.status(500).json({ error: 'Erro ao fazer login', details: err });
+    // Validação simples
+    if (!nome || !email || !senha) {
+      return res.status(400).json({ error: 'Campos obrigatórios ausentes.' });
+    }
+
+    // Verificar se o usuário já existe
+    const existe = await User.findOne({ where: { email } });
+    if (existe) {
+      return res.status(400).json({ error: 'Email já cadastrado.' });
+    }
+
+    // Criptografar a senha
+    const senhaCriptografada = await bcrypt.hash(senha, 10);
+
+    // Criar o usuário
+    const novoUsuario = await User.create({ nome, email, senha: senhaCriptografada });
+
+    return res.status(201).json({
+      message: 'Usuário registrado com sucesso',
+      user: {
+        id: novoUsuario.id,
+        nome: novoUsuario.nome,
+        email: novoUsuario.email,
+      },
+    });
+  } catch (error) {
+    console.error('Erro ao registrar usuário:', error);
+    res.status(500).json({ error: 'Erro ao registrar usuário', details: error.message });
   }
 });
 
