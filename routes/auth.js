@@ -1,31 +1,29 @@
-
 const express = require('express');
 const bcrypt = require('bcrypt');
+const { User } = require('../models');
+const generateToken = require('../utils/generateToken');
+
 const router = express.Router();
-const { User } = require('../models'); // Certifique-se de que seu model está nomeado corretamente
 
+// Registro
 router.post('/register', async (req, res) => {
-  const { nome, email, senha } = req.body;
-
   try {
-    // Validação simples
-    if (!nome || !email || !senha) {
-      return res.status(400).json({ error: 'Campos obrigatórios ausentes.' });
+    const { nome, email, senha } = req.body;
+
+    const userExist = await User.findOne({ where: { email } });
+    if (userExist) {
+      return res.status(400).json({ error: 'E-mail já registrado' });
     }
 
-    // Verificar se o usuário já existe
-    const existe = await User.findOne({ where: { email } });
-    if (existe) {
-      return res.status(400).json({ error: 'Email já cadastrado.' });
-    }
+    const hashedPassword = await bcrypt.hash(senha, 10);
 
-    // Criptografar a senha
-    const senhaCriptografada = await bcrypt.hash(senha, 10);
+    const novoUsuario = await User.create({
+      nome,
+      email,
+      senha: hashedPassword,
+    });
 
-    // Criar o usuário
-    const novoUsuario = await User.create({ nome, email, senha: senhaCriptografada });
-
-    return res.status(201).json({
+    res.status(201).json({
       message: 'Usuário registrado com sucesso',
       user: {
         id: novoUsuario.id,
@@ -35,7 +33,39 @@ router.post('/register', async (req, res) => {
     });
   } catch (error) {
     console.error('Erro ao registrar usuário:', error);
-    res.status(500).json({ error: 'Erro ao registrar usuário', details: error.message });
+    res.status(500).json({ error: 'Erro ao registrar usuário' });
+  }
+});
+
+// Login
+router.post('/login', async (req, res) => {
+  try {
+    const { email, senha } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ error: 'Credenciais inválidas' });
+    }
+
+    const validPassword = await bcrypt.compare(senha, user.senha);
+    if (!validPassword) {
+      return res.status(401).json({ error: 'Credenciais inválidas' });
+    }
+
+    const token = generateToken(user.id);
+
+    res.status(200).json({
+      message: 'Login realizado com sucesso',
+      user: {
+        id: user.id,
+        nome: user.nome,
+        email: user.email,
+      },
+      token,
+    });
+  } catch (error) {
+    console.error('Erro no login:', error);
+    res.status(500).json({ error: 'Erro no login' });
   }
 });
 
