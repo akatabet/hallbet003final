@@ -4,27 +4,37 @@ const verificarToken = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Criar uma nova aposta (rota protegida)
+// Criar nova aposta
 router.post('/', verificarToken, async (req, res) => {
   try {
     const { partida_id, tipo_aposta, valor_apostado } = req.body;
-    const user_id = req.usuario.id; // vem do token
 
     if (!partida_id || !tipo_aposta || !valor_apostado) {
-      return res.status(400).json({ error: 'Dados incompletos para registrar aposta' });
+      return res.status(400).json({ error: 'Dados incompletos' });
     }
 
     const novaAposta = await Aposta.create({
-      user_id,
       partida_id,
       tipo_aposta,
-      valor_apostado
+      valor_apostado,
+      userId: req.userId, // vem do middleware
     });
 
     res.status(201).json(novaAposta);
   } catch (error) {
     console.error('Erro ao criar aposta:', error);
     res.status(500).json({ error: 'Erro ao criar aposta' });
+  }
+});
+
+// Listar apostas do usuário logado
+router.get('/', verificarToken, async (req, res) => {
+  try {
+    const apostas = await Aposta.findAll({ where: { userId: req.userId } });
+    res.json(apostas);
+  } catch (error) {
+    console.error('Erro ao buscar apostas:', error);
+    res.status(500).json({ error: 'Erro ao buscar apostas' });
   }
 });
 
