@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 
 function verificarToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-
   if (!authHeader) {
     return res.status(401).json({ error: 'Token não fornecido' });
   }
@@ -10,12 +9,11 @@ function verificarToken(req, res, next) {
   const token = authHeader.split(' ')[1];
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ error: 'Token inválido' });
+    if (err || !decoded || !decoded.id) {
+      return res.status(403).json({ error: 'Token inválido ou malformado' });
     }
 
-    // 🔧 Corrigido: deve ser "req.user"
-    req.user = { id: decoded.id };
+    req.usuario = decoded; // Aqui vem { id: ... }
 
     next();
   });
