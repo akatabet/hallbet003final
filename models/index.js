@@ -13,13 +13,12 @@ const sequelize = new Sequelize(
   }
 );
 
-// IMPORTA E INICIALIZA O MODEL USER
 const User = require('./User');
+const Partida = require('./Partida');
+const Aposta = require('./Aposta');
+
 User.initModel(sequelize);
+Partida.initModel(sequelize);
+Aposta.initModel(sequelize);
 
-module.exports = {
-  sequelize,
-  User,
-};
-
-
+module.exports = { sequelize, User, Partida, Aposta };
