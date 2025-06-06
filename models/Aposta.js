@@ -6,6 +6,7 @@ class Aposta extends Model {
       partida_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        field: 'id_partida'
       },
       tipo_aposta: {
         type: DataTypes.ENUM('casa', 'empate', 'fora'),
@@ -14,10 +15,16 @@ class Aposta extends Model {
       valor_apostado: {
         type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
+        field: 'valor'
+      },
+      odd: {
+        type: DataTypes.DECIMAL(4, 2),
+        allowNull: false,
       },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        field: 'id_usuario'
       },
     }, {
       sequelize,
