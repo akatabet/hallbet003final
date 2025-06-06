@@ -4,8 +4,9 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const { sequelize } = require('./models');
 const authRoutes = require('./routes/auth');
-const partidaRoutes = require('./routes/partidas');
+const partidasRoutes = require('./routes/partidas');
 const apostaRoutes = require('./routes/apostas');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
@@ -15,15 +16,14 @@ const HOST = '0.0.0.0';
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
-app.use('/api/partidas', partidaRoutes);
+app.use('/api/partidas', partidasRoutes);
 app.use('/api/apostas', apostaRoutes);
+app.use('/api/user', userRoutes);
 
-// ✅ ROTA PRINCIPAL PARA TESTE NO RENDER
 app.get("/", (req, res) => {
   res.send("API da Hallbet online!");
 });
 
-// ✅ INICIA O SERVIDOR E CONECTA AO BANCO
 sequelize.sync().then(() => {
   app.listen(PORT, HOST, () => {
     console.log(`Servidor backend rodando em http://${HOST}:${PORT}`);
@@ -31,6 +31,3 @@ sequelize.sync().then(() => {
 }).catch(err => {
   console.error('Erro ao conectar com o banco de dados:', err);
 });
-const userRoutes = require('./routes/user');
-app.use('/api/user', userRoutes);
-
