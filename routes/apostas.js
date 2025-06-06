@@ -1,5 +1,5 @@
 const express = require('express');
-const { Aposta } = require('../models');
+const { Aposta, Partida } = require('../models');
 const verificarToken = require('../middleware/authMiddleware');
 
 const router = express.Router();
