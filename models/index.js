@@ -14,7 +14,7 @@ const sequelize = new Sequelize(
 );
 
 // Importa o model
-const User = require('./user');
+const User = require('./User');
 
 // Adiciona o sequelize à instância do model
 User.initModel(sequelize);
