@@ -3,11 +3,7 @@ const { DataTypes, Model } = require('sequelize');
 class Aposta extends Model {
   static initModel(sequelize) {
     Aposta.init({
-      id_usuario: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      id_partida: {
+      partida_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
@@ -15,17 +11,13 @@ class Aposta extends Model {
         type: DataTypes.ENUM('casa', 'empate', 'fora'),
         allowNull: false,
       },
-      valor: {
-        type: DataTypes.DECIMAL(10,2),
+      valor_apostado: {
+        type: DataTypes.DECIMAL(10, 2),
         allowNull: false,
       },
-      odd: {
-        type: DataTypes.DECIMAL(5,2),
+      userId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-      },
-      resultado: {
-        type: DataTypes.ENUM('pendente', 'ganhou', 'perdeu'),
-        defaultValue: 'pendente',
       },
     }, {
       sequelize,
