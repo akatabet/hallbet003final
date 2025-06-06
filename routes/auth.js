@@ -10,10 +10,11 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await User.create({ username, email, password: hashedPassword });
     res.status(201).json(newUser);
-  } catch (err) {
-    res.status(500).json({ error: 'Erro ao registrar usuário', details: err });
-  }
+  } .catch(error => {
+  console.error("Erro ao registrar usuário:", error); // Mostra no log da Render
+  res.status(500).json({ error: "Erro ao registrar usuário", details: error.message });
 });
+
 
 // Login
 router.post('/login', async (req, res) => {
