@@ -13,15 +13,13 @@ const sequelize = new Sequelize(
   }
 );
 
-// Importa o model
+// IMPORTA E INICIALIZA O MODEL USER
 const User = require('./User');
-
-// Adiciona o sequelize à instância do model
 User.initModel(sequelize);
 
-// Exporta os dois
 module.exports = {
   sequelize,
   User,
 };
+
 
