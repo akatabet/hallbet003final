@@ -44,17 +44,17 @@ router.post('/login', async (req, res) => {
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(401).json({ error: 'Credenciais inválidas' });
+      return res.status(401).json({ error: 'Usuário não encontrado' });
     }
 
-    const validPassword = await bcrypt.compare(senha, user.senha);
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Credenciais inválidas' });
+    const senhaCorreta = await bcrypt.compare(senha, user.senha);
+    if (!senhaCorreta) {
+      return res.status(401).json({ error: 'Senha incorreta' });
     }
 
     const token = generateToken(user.id);
 
-    res.status(200).json({
+    res.json({
       message: 'Login realizado com sucesso',
       user: {
         id: user.id,
@@ -63,9 +63,10 @@ router.post('/login', async (req, res) => {
       },
       token,
     });
+
   } catch (error) {
-    console.error('Erro no login:', error);
-    res.status(500).json({ error: 'Erro no login' });
+    console.error('Erro ao fazer login:', error);
+    res.status(500).json({ error: 'Erro interno ao fazer login' });
   }
 });
 
