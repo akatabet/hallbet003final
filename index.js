@@ -27,3 +27,6 @@ sequelize.sync().then(() => {
 }).catch(err => {
   console.error('Erro ao conectar com o banco de dados:', err);
 });
+const userRoutes = require('./routes/user');
+app.use('/api/user', userRoutes);
+
