@@ -14,6 +14,12 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 
+// ✅ ROTA PRINCIPAL PARA TESTE NO RENDER
+app.get("/", (req, res) => {
+  res.send("API da Hallbet online!");
+});
+
+// ✅ INICIA O SERVIDOR E CONECTA AO BANCO
 sequelize.sync().then(() => {
   app.listen(PORT, HOST, () => {
     console.log(`Servidor backend rodando em http://${HOST}:${PORT}`);
