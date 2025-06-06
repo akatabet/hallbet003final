@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const { sequelize } = require('./models');
 const authRoutes = require('./routes/auth');
+const partidaRoutes = require('./routes/partidas');
+const apostaRoutes = require('./routes/apostas');
 
 const app = express();
 
@@ -13,6 +15,8 @@ const HOST = '0.0.0.0';
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
+app.use('/api/partidas', partidaRoutes);
+app.use('/api/apostas', apostaRoutes);
 
 // ✅ ROTA PRINCIPAL PARA TESTE NO RENDER
 app.get("/", (req, res) => {
