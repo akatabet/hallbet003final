@@ -38,5 +38,24 @@ router.get('/', verificarToken, async (req, res) => {
     res.status(500).json({ error: 'Erro ao buscar apostas' });
   }
 });
+// 🔍 Detalhes das apostas com dados da partida
+router.get('/detalhes', verificarToken, async (req, res) => {
+  try {
+    const apostas = await Aposta.findAll({
+      where: { userId: req.usuario.id },
+      include: {
+        model: Partida,
+        attributes: ['time_casa', 'time_fora', 'data_hora']
+      },
+      order: [['criado_em', 'DESC']]
+    });
+
+    res.json(apostas);
+  } catch (error) {
+    console.error('Erro ao buscar apostas com detalhes:', error);
+    res.status(500).json({ error: 'Erro ao buscar apostas com detalhes' });
+  }
+});
+
 
 module.exports = router;
