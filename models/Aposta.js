@@ -35,13 +35,13 @@ class Aposta extends Model {
       updatedAt: false,
     });
   }
-}
-Aposta.associate = (models) => {
-  Aposta.belongsTo(models.Partida, {
-    foreignKey: 'partida_id',
-    as: 'Partida'
-  });
-};
 
+  static associate(models) {
+    Aposta.belongsTo(models.Partida, {
+      foreignKey: 'partida_id',
+      as: 'partida'
+    });
+  }
+}
 
 module.exports = Aposta;

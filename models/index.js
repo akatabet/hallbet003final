@@ -20,7 +20,7 @@ const Aposta = require('./Aposta');
 User.initModel(sequelize);
 Partida.initModel(sequelize);
 Aposta.initModel(sequelize);
-Aposta.associate({ Partida });
 
+Aposta.associate({ Partida }); // Aqui associa corretamente
 
 module.exports = { sequelize, User, Partida, Aposta };
